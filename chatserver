@@ -88,4 +88,19 @@ def clientthread(connection,address):
 
         except KeyboardInterrupt:
             connection.close()
-            break
+            break 
+
+
+
+while True:
+    connection,address=server_socket.accept()
+    
+    connection.sendall('Hello 1'.encode('utf-8'))
+    clients.append(conn)
+    print(address[0]+" has connected")
+    
+    start_new_thread(clientthread,(connection,address))
+    
+
+connection.close()
+server_socket.close()
