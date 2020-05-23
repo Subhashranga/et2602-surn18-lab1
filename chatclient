@@ -11,18 +11,29 @@ if len(sys.argv)!=3:
     sys.exit()
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+
 information = (sys.argv[1])
 agent=information.split(':')
 ipaddress=str(agent[0])
 port=int(agent[1])
 nick=str(sys.argv[2])
+
+
 server_socket.connect((ipaddress, port))
+
 first_msg=server_socket.recv(2048).decode('utf-8')
+
 print(first_msg)
+
 nick = 'NICK ' + nick
-server.sendall(nick.encode('utf-8'))
-ok_msg=server.recv(2048).decode('utf-8')
+
+
+server_socket.sendall(nick.encode('utf-8'))
+
+ok_msg=server_socket.recv(2048).decode('utf-8')
 print(ok_msg)
 if ok_msg == "OK":
     pass
@@ -33,6 +44,8 @@ elif ok_msg == "ERR malformed nick name":
     
     
 
+
+
 while True:
     socket_list=[sys.stdin, server_socket]
     
@@ -40,7 +53,7 @@ while True:
     read_sockets,write_sockets,error_sockets=select.select(socket_list,[],[])
     
     for sockets in read_sockets:
-        if sockets == server:
+        if sockets == server_socket:
             message = sockets.recv(2048).decode('utf-8')
             print(message)
         else:
@@ -53,3 +66,6 @@ while True:
                 server_socket.sendall(message.encode('utf-8'))
                 
 server_socket.close()
+
+
+
