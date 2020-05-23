@@ -12,4 +12,12 @@ if len(sys.argv)!=2:
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
+information = (sys.argv[1])
+agent=information.split(':')
+ipaddress=str(agent[0])
+port=int(agent[1])
+server_socket.bind((ipaddress,port))
+server_socket.listen(100)
+print('Connecting Clients,hold on!')
+clients=[]
+clients.append(server)
