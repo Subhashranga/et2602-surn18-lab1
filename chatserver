@@ -20,4 +20,72 @@ server_socket.bind((ipaddress,port))
 server_socket.listen(100)
 print('Connecting Clients,hold on!')
 clients=[]
-clients.append(server)
+clients.append(server.socket)
+
+def clientthread(connection,address):
+    while True:
+        
+        try:
+            nick=connection.recv(2048).decode('utf-8')
+            nick1=nick.strip('NICK ')
+            regex = re.compile('[@!#$%^&*()?/|}{~:]')
+            
+            if(regex.search(nick1) == None) and len(nick1)<=12 and 'NICK ' in nick :
+                connection.sendall('OK'.encode('utf-8'))
+                break
+            elif len(nick1) or regex.search(nick1) != None:
+                connection.sendall('ERR malformed nick name'.encode('utf-8'))
+            else:
+                connection.close()
+                print(address[0]+" has disconnected")
+                clients.remove(connection)
+                del clients[connection]
+                break
+        except :
+                break
+
+        
+
+    while True:
+        try:
+            if connection in clients:
+                message = connection.recv(2048).decode('utf-8')
+                message1=message.strip('MSG ')
+                
+            
+                if not message:
+                    connection.close()
+                    print(address[0]+" has been disconnected")
+                    clients.remove(connection)
+                    break 
+
+                elif 'MSG ' not in message:
+                    connection.sendall('ERROR malformed message'.encode('utf-8'))
+                else:
+
+                
+                    if len(message1)<=255 :
+                    
+                        flag=0
+                        for i in message1[:-1]:
+                            if ord(i)<31:
+                            
+                                flag = flag +1
+                            
+                            else:
+                                pass
+                    #else if and next elif        
+                        if flag != 0:
+                            connection.sendall('ERROR occured, dont use control characters'.encode('utf-8'))
+                        else:
+                            message_to_send = 'MSG '+nick1+' ' + message1[:-1]
+                
+                            broadcasting(message_to_send,connection,nick1)
+                    elif len(message1) > 255 :
+                        connection.sendall('ERROR occured, message length should not exceed 256 characters'.encode('utf-8'))
+                   
+                
+
+        except KeyboardInterrupt:
+            connection.close()
+            break
