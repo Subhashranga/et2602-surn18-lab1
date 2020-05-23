@@ -88,7 +88,16 @@ def clientthread(connection,address):
 
         except KeyboardInterrupt:
             connection.close()
-            break 
+            break
+
+def broadcasting(message,connection,nick1):
+    for sockets in clients:
+        if sockets!= server_socket:
+            try:
+                sockets.sendall(message.encode('utf-8'))
+            except KeyboardInterrupt:
+                    clients.remove(sockets)
+                    break
 
 
 
@@ -96,7 +105,7 @@ while True:
     connection,address=server_socket.accept()
     
     connection.sendall('Hello 1'.encode('utf-8'))
-    clients.append(conn)
+    clients.append(connection)
     print(address[0]+" has connected")
     
     start_new_thread(clientthread,(connection,address))
