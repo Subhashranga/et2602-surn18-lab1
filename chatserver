@@ -7,7 +7,7 @@ import select
 import re 
 
 if len(sys.argv)!=2:
-    print("valid input format is = ./chatserver ip:port ")
+    print("valid input format is = ./chatserver ip:port ")#input format
     sys.exit()
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
