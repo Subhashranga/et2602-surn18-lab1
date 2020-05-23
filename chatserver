@@ -20,7 +20,7 @@ server_socket.bind((ipaddress,port))
 server_socket.listen(100)
 print('Connecting Clients,hold on!')
 clients=[]
-clients.append(server.socket)
+clients.append(server_socket.socket)
 
 def clientthread(connection,address):
     while True:
